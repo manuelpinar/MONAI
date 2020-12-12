@@ -577,14 +577,13 @@ def get_extreme_points(
     img: np.ndarray, rand_state: np.random.RandomState = np.random, background: int = 0, permutation: float = 0.0
 ) -> List[Tuple[int]]:
     """
-    Get extreme points from an image.
-
-    Can optionally pass in permutation to simulate the real user's click.
-    This is for pipelines inspired by Deep Extreme Cut (Maninis and Caelles et al. CVPR 2018).
+    Generate extreme points from an image. These are used to generate initial segmentation
+    for annotation models. An optional permutation can be passed to simulate user clicks.
 
     Args:
-        img: Image to get extreme points from. Shape is (spatial_dim1, [, spatial_dim2, ...])
-        rand_state: numpy randomState object to align with other modules.
+        img:
+            Image to generate extreme points from. Expected Shape is ``(spatial_dim1, [, spatial_dim2, ...])``.
+        rand_state: `np.random.RandomState` object used to select random indices.
         background: Value to be consider as background, defaults to 0.
         permutation: Random permutation amount to add to the points, defaults to 0.0.
 
@@ -602,7 +601,8 @@ def get_extreme_points(
         raise ValueError("get_extreme_points: no foreground object in mask!")
 
     def _get_point(val, dim):
-        """Select one of the indices within slice containing val
+        """
+        Select one of the indices within slice containing val.
 
         Args:
             val : value for comparison

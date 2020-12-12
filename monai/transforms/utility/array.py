@@ -540,33 +540,33 @@ class FgBgToIndices(Transform):
 
 class AddExtremePointsChannel(Transform, Randomizable):
     """
-    Add extreme points of label to the image as a new channel.
+    Add extreme points of label to the image as a new channel. This transform generates extreme
+    point from label and applies a gaussian filter. The pixel values in points image are rescaled
+    to range [rescale_min, rescale_max] and added as a new channel to input image. The algorithm is
+    described in https://arxiv.org/pdf/2009.11988.pdf.
 
-    This transform will first get extreme points from label.
-    Then apply a gaussian filter on it.
-    And rescale the pixel values to be in range [rescale_min, rescale_max].
-    Finally, this will be added as a new channel for the image.
-
-    Note that the label should be of shape (1, spatial_dim1, [spatial_dim2, ...])
-
-    This transform is for pipelines inspired by Deep Extreme Cut (Maninis and Caelles et al. CVPR 2018).
+    This transform only supports single channel labels (1, spatial_dim1, [spatial_dim2, ...]). The
+    background ``index`` is ignored when calculating extreme points.
 
     Args:
-        label: the image to get extreme points from. Shape is (1, spatial_dim1, [, spatial_dim2, ...]).
-        background: Value to be consider as background, defaults to 0.
+        background: Class index of background label, defaults to 0.
         permutation: Random permutation amount to add to the points, defaults to 0.0.
 
+    Raises:
+        ValueError: When no label image provided.
+        ValueError: When label image is not single channel.
     """
 
-    def __init__(self, label: Optional[np.ndarray] = None, background: int = 0, permutation: float = 0.0) -> None:
-        self.label = label
+    def __init__(self, background: int = 0, permutation: float = 0.0) -> None:
         self._background = background
         self._permutation = permutation
         self._points = []
 
-    def randomize(self, data=None) -> None:
+    def randomize(self, label: np.ndarray) -> None:
         self._points = get_extreme_points(
-            data[0], rand_state=self.R, background=self._background, permutation=self._permutation
+            label, rand_state=self.R,
+            background=self._background,
+            permutation=self._permutation
         )
 
     def __call__(
@@ -579,21 +579,22 @@ class AddExtremePointsChannel(Transform, Randomizable):
     ) -> np.ndarray:
         """
         Args:
-            img: the image that we want to add new channel.
-            label: the image to get extreme points from. Shape is (1, spatial_dim1, [, spatial_dim2, ...]).
+            img: the image that we want to add new channel to.
+            label: label image to get extreme points from. Shape must be 
+                (1, spatial_dim1, [, spatial_dim2, ...]). Doesn't support one-hot labels.
             sigma: if a list of values, must match the count of spatial dimensions of input data,
                 and apply every value in the list to 1 spatial dimension. if only 1 value provided,
                 use it for all spatial dimensions.
             rescale_min: minimum value of output data.
             rescale_max: maximum value of output data.
         """
-        label = self.label if label is None else label
         if label is None:
-            raise ValueError("This transform required label array!")
+            raise ValueError("This transform requires a label array!")
         if label.shape[0] != 1:
-            raise ValueError("Only support label with 1 channel!")
+            raise ValueError("Only supports single channel labels!")
 
-        self.randomize(label)
+        # Generate extreme points
+        self.randomize(label[0, :])
 
         # points to image
         points_image = torch.zeros(label.shape[1:], dtype=torch.float)

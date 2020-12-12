@@ -58,8 +58,8 @@ TEST_CASE_2 = [
 class TestAddExtremePointsChannel(unittest.TestCase):
     @parameterized.expand([TEST_CASE_1, TEST_CASE_2])
     def test_type_shape(self, input_data, expected):
-        t = AddExtremePointsChannel()
-        result = t(**input_data)
+        add_extreme_points_channel = AddExtremePointsChannel()
+        result = add_extreme_points_channel(**input_data)
         np.testing.assert_allclose(result[IMG_CHANNEL], expected, rtol=1e-4)
 
 

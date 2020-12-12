@@ -645,7 +645,7 @@ class AddExtremePointsChanneld(MapTransform):
         keys: keys of the corresponding items to be transformed.
             See also: :py:class:`monai.transforms.compose.MapTransform`
         label_key: key to label source to get the extreme points.
-        background: Value to be consider as background, defaults to 0.
+        background: Class index of background label, defaults to 0.
         permutation: Random permutation amount to add to the points, defaults to 0.0.
         sigma: if a list of values, must match the count of spatial dimensions of input data,
             and apply every value in the list to 1 spatial dimension. if only 1 value provided,
@@ -667,7 +667,9 @@ class AddExtremePointsChanneld(MapTransform):
     ):
         super().__init__(keys)
         self.label_key = label_key
-        self.add_extreme_points_channel = AddExtremePointsChannel(background=background, permutation=permutation)
+        self.add_extreme_points_channel = AddExtremePointsChannel(
+            background=background, permutation=permutation
+        )
         self.sigma = sigma
         self.rescale_min = rescale_min
         self.rescale_max = rescale_max
@@ -680,7 +682,8 @@ class AddExtremePointsChanneld(MapTransform):
             if key in self.keys:
                 img = d[key]
                 d[key] = self.add_extreme_points_channel(
-                    img, label=label, sigma=self.sigma, rescale_min=self.rescale_min, rescale_max=self.rescale_max
+                    img, label=label, sigma=self.sigma, 
+                    rescale_min=self.rescale_min, rescale_max=self.rescale_max
                 )
         return d
 
