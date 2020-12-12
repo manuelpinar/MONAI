@@ -667,9 +667,7 @@ class AddExtremePointsChanneld(MapTransform):
     ):
         super().__init__(keys)
         self.label_key = label_key
-        self.add_extreme_points_channel = AddExtremePointsChannel(
-            background=background, permutation=permutation
-        )
+        self.add_extreme_points_channel = AddExtremePointsChannel(background=background, permutation=permutation)
         self.sigma = sigma
         self.rescale_min = rescale_min
         self.rescale_max = rescale_max
@@ -682,8 +680,7 @@ class AddExtremePointsChanneld(MapTransform):
             if key in self.keys:
                 img = d[key]
                 d[key] = self.add_extreme_points_channel(
-                    img, label=label, sigma=self.sigma, 
-                    rescale_min=self.rescale_min, rescale_max=self.rescale_max
+                    img, label=label, sigma=self.sigma, rescale_min=self.rescale_min, rescale_max=self.rescale_max
                 )
         return d
 

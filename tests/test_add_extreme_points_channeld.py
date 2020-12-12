@@ -19,10 +19,7 @@ from monai.transforms import AddExtremePointsChanneld
 IMG_CHANNEL = 3
 
 TEST_CASE_1 = [
-    {
-        "img": np.zeros((IMG_CHANNEL, 4, 3)),
-        "label": np.array([[[0, 1, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0]]])
-    },
+    {"img": np.zeros((IMG_CHANNEL, 4, 3)), "label": np.array([[[0, 1, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0]]])},
     np.array(
         [
             [0.38318458, 0.98615628, 0.85551184],
@@ -34,10 +31,7 @@ TEST_CASE_1 = [
 ]
 
 TEST_CASE_2 = [
-    {
-        "img": np.zeros((IMG_CHANNEL, 4, 3)),
-        "label": np.array([[[0, 1, 0], [1, 1, 1], [0, 1, 0], [0, 1, 0]]])
-    },
+    {"img": np.zeros((IMG_CHANNEL, 4, 3)), "label": np.array([[[0, 1, 0], [1, 1, 1], [0, 1, 0], [0, 1, 0]]])},
     np.array(
         [
             [0.44628328, 0.80495411, 0.44628328],
@@ -53,8 +47,7 @@ class TestAddExtremePointsChanneld(unittest.TestCase):
     @parameterized.expand([TEST_CASE_1, TEST_CASE_2])
     def test_type_shape(self, input_data, expected):
         add_extreme_points_channel = AddExtremePointsChanneld(
-            keys="img", label_key="label", 
-            sigma=1.0, rescale_min=0.0, rescale_max=1.0
+            keys="img", label_key="label", sigma=1.0, rescale_min=0.0, rescale_max=1.0
         )
         result = add_extreme_points_channel(input_data)
         np.testing.assert_allclose(result["img"][IMG_CHANNEL], expected, rtol=1e-4)

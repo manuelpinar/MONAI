@@ -575,7 +575,7 @@ def get_largest_connected_component_mask(img: torch.Tensor, connectivity: Option
 
 def get_extreme_points(
     img: np.ndarray, rand_state: np.random.RandomState = np.random, background: int = 0, permutation: float = 0.0
-) -> List[Tuple[int]]:
+) -> List[Tuple[int, ...]]:
     """
     Generate extreme points from an image. These are used to generate initial segmentation
     for annotation models. An optional permutation can be passed to simulate user clicks.

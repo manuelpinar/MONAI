@@ -564,9 +564,7 @@ class AddExtremePointsChannel(Transform, Randomizable):
 
     def randomize(self, label: np.ndarray) -> None:
         self._points = get_extreme_points(
-            label, rand_state=self.R,
-            background=self._background,
-            permutation=self._permutation
+            label, rand_state=self.R, background=self._background, permutation=self._permutation
         )
 
     def __call__(
@@ -580,7 +578,7 @@ class AddExtremePointsChannel(Transform, Randomizable):
         """
         Args:
             img: the image that we want to add new channel to.
-            label: label image to get extreme points from. Shape must be 
+            label: label image to get extreme points from. Shape must be
                 (1, spatial_dim1, [, spatial_dim2, ...]). Doesn't support one-hot labels.
             sigma: if a list of values, must match the count of spatial dimensions of input data,
                 and apply every value in the list to 1 spatial dimension. if only 1 value provided,
