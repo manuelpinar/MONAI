@@ -543,7 +543,8 @@ class AddExtremePointsChannel(Transform, Randomizable):
     Add extreme points of label to the image as a new channel. This transform generates extreme
     point from label and applies a gaussian filter. The pixel values in points image are rescaled
     to range [rescale_min, rescale_max] and added as a new channel to input image. The algorithm is
-    described in https://arxiv.org/pdf/2009.11988.pdf.
+    described in Roth et al., Going to Extremes: Weakly Supervised Medical Image Segmentation
+    https://arxiv.org/abs/2009.11988.
 
     This transform only supports single channel labels (1, spatial_dim1, [spatial_dim2, ...]). The
     background ``index`` is ignored when calculating extreme points.
@@ -560,7 +561,7 @@ class AddExtremePointsChannel(Transform, Randomizable):
     def __init__(self, background: int = 0, permutation: float = 0.0) -> None:
         self._background = background
         self._permutation = permutation
-        self._points = []
+        self._points: List[Tuple[int, ...]] = []
 
     def randomize(self, label: np.ndarray) -> None:
         self._points = get_extreme_points(
